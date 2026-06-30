@@ -11,8 +11,8 @@ import (
 
 func TestVersionWiringIsEnforced(t *testing.T) {
 	analysistest.Run(t, analysistest.TestData(), cliversion.Analyzer,
-		"good", "missing", "empty", "positional", "literal", "wrongname",
-		"constver", "selector", "callexpr", "localvar", "twobad", "nonurfave", "lib")
+		"good", "diparam", "missing", "empty", "positional", "literal", "wrongname",
+		"constver", "selector", "callexpr", "twobad", "nonurfave", "lib")
 }
 
 func TestRegistrationIsWellFormed(t *testing.T) {

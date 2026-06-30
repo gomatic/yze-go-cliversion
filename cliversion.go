@@ -26,7 +26,7 @@ const (
 	urfaveV2 = "github.com/urfave/cli/v2"
 
 	messageMissing = "package main builds a urfave/cli command but none sets Version to the package-level `var version`; --version will not report the build version"
-	messageNotVar  = "Version must reference the package-level `var version`, not a literal or a differently-named symbol"
+	messageNotVar  = "Version must reference the package-level `var version` (or a value threaded from it through a `version` parameter), not a literal, call, const, or differently-named symbol"
 )
 
 // Analyzer reports a urfave/cli main package that does not wire a command's
@@ -77,7 +77,7 @@ func reportCommands(pass *analysis.Pass, commands []*ast.CompositeLit) {
 		switch {
 		case !ok:
 			continue
-		case isPackageVersionVar(pass, value):
+		case isVersionVar(pass, value):
 			return
 		case badValue == nil:
 			badValue = value
@@ -124,12 +124,18 @@ func versionField(lit *ast.CompositeLit) (ast.Expr, bool) {
 	return nil, false
 }
 
-// isPackageVersionVar reports whether expr is the package-level `var version`.
-func isPackageVersionVar(pass *analysis.Pass, expr ast.Expr) bool {
+// isVersionVar reports whether expr references a variable named `version` — the
+// package-level `var version` (the ldflags target) or a value threaded from it
+// through parameters (the gomatic dependency-injection idiom: `var version` ->
+// run(version) -> newApp(version) -> Version: version). It deliberately accepts
+// any `*types.Var` named `version`, not only the package-scope one, so the
+// testable DI pattern is not a false positive; a const, literal, call (e.g.
+// getVersion()), selector, or differently-named symbol is still rejected.
+func isVersionVar(pass *analysis.Pass, expr ast.Expr) bool {
 	ident, ok := expr.(*ast.Ident)
 	if !ok {
 		return false
 	}
 	v, ok := pass.TypesInfo.ObjectOf(ident).(*types.Var)
-	return ok && v.Name() == "version" && v.Parent() == pass.Pkg.Scope()
+	return ok && v.Name() == "version"
 }
