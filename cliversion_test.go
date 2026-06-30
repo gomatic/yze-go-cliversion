@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	cliversion "github.com/gomatic/yze-cliversion"
+	cliversion "github.com/gomatic/yze-go-cliversion"
 )
 
 func TestVersionWiringIsEnforced(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/tools/go/analysis"
 
-	cliversion "github.com/gomatic/yze-cliversion"
+	cliversion "github.com/gomatic/yze-go-cliversion"
 )
 
 func TestMainRunsTheAnalyzer(t *testing.T) {

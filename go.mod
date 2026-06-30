@@ -1,4 +1,4 @@
-module github.com/gomatic/yze-cliversion
+module github.com/gomatic/yze-go-cliversion
 
 go 1.26.4
 
